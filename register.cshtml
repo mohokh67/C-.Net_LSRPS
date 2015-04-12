@@ -1,0 +1,115 @@
+﻿@{
+    Page.Title = "Register A new player";
+    Layout = "~/_PlayerLayout.cshtml";
+    var today = DateTime.Now.ToString("yyyy-MM-dd");
+    var mode = Player.Mode;
+    /***************************************************/
+  
+    
+    var ErrMsg = string.Empty;
+    var SuccessMsg = string.Empty;
+    if (IsPost)
+    {
+        AntiForgery.Validate();
+        var username = this.Request.Form["username"];
+        var password = this.Request.Form["password"];
+        var password2 = this.Request.Form["password2"];
+        var email = this.Request.Form["email"];
+        var birthday = this.Request.Form["birthday"];
+        
+
+        if (password != password2)
+        {
+            //password and confirmatin must be the same at each time, for edit and new
+            ErrMsg += "Passwords do not match.<br/>";
+
+        }
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            //However, I checked the email text box by 'HTML INPUT ATTRIBUTE' and It is required
+            //But I will check again in case of any problem
+            ErrMsg += "Password can not be blank.<br/>";
+        }
+
+        username = username.ToLower();
+        email = email.ToLower();
+        var result = PlayerRepository.Get(username);
+
+        if (result != null)
+        {
+            ErrMsg += "Username is already in use! try another one";
+        }
+        else
+        {
+            PlayerRepository.Add(username, Crypto.HashPassword(password), email, birthday, 0, 0, 0);
+
+            SuccessMsg = "You have successfully registered. try to login and start playing...";
+            if (WebPlayer.AuthenticateAndLogin(username, password))
+            {
+                Response.Redirect("~/game.aspx");
+            }
+            
+            
+        }
+    }
+    if (WebPlayer.IsAuthenticated)
+    {
+        Response.Redirect("~/game.aspx");
+    }
+}
+
+
+    <div id="body">
+      <div class="error">@ErrMsg</div><br/> 
+       <div class="message-success">@SuccessMsg</div> 
+        <form method="post" id="playerForm">
+
+
+            @AntiForgery.GetHtml()           
+            <input type="hidden" name="playerId" value="" />
+
+            <fieldset>
+                <legend>Registration Form</legend>
+                <ol>
+                   
+                        <li>
+                            <label for="username">Username: </label>
+                            <input id="username" name="username" maxlength="50" pattern="[A-Za-z0-9]{6,}" title="Minimum is 6 characters contain Alphabet and numbers"
+                                   placeholder="Your username" required value="" />
+                        </li>
+                   
+                   
+                        <li>
+                            <label for="password">password: </label>
+                            <input id="password" name="password" pattern=".{8,50}" title="Minimum length is 8 characters" type="password" placeholder="Your password" value="" required />
+                        </li>
+                        <li>
+                            <label for="password2">confirm your password: </label>
+                            <input id="password2" name="password2" pattern=".{8,50}" title="Minimum length is 8 characters" type="password" placeholder="Confirm your password agian" value="" required oninput="check(this)" />
+                        </li>
+                    
+                    <li class="email">
+                        <label for="email">Email: </label>
+                        <input id="email" name="email" type="email" pattern=".{8,50}" title="Minimum length is 8 characters" placeholder="Your email" required value="" />
+                    </li>
+                    <li>
+                        <label for="birthday">Date of birth: </label>
+                        <input type="date" min="1900-12-31" max="@today" id="birthday" name="birthday" required value="">
+                    </li>
+                    <li>
+                        <input name="register" value="Register" type="submit" />
+                    </li>
+                </ol>
+            </fieldset>
+        </form>
+    </div>
+
+<script language='javascript' type='text/javascript'>
+    function check(input) {
+        if (input.value != document.getElementById('password').value) {
+            input.setCustomValidity('Passwords are not match.');
+        } else {
+            input.setCustomValidity('');
+        }
+    }
+</script>

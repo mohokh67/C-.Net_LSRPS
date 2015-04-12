@@ -1,0 +1,29 @@
+﻿@{
+    Page.Title = "Rock Paper Scissors Lizard Spock";
+    Layout = "~/_PlayerLayout.cshtml";
+
+
+}
+<div>
+    <center>
+        <p class="featured"><h3>List of Users with Statistics</h3></p>
+        @{
+            var where = string.Empty;
+            var grid = new WebGrid(source: PlayerRepository.GetAll(where, orderBy: "[username]"), rowsPerPage: 13);
+
+            @grid.GetHtml(
+
+                columns: grid.Columns(
+                    grid.Column("username", header: "User name"),
+                    grid.Column("email", header: "Email Address"),
+                    grid.Column("birthday", header: "Birthday"),
+                    grid.Column("win", header: "Win"),
+                    grid.Column("lost", header: "Lost"),
+                    grid.Column("draw", header: "Draw"),
+                    grid.Column("total", header: "Total")
+
+                )
+            );
+        }
+    </center>
+</div>

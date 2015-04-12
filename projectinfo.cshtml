@@ -1,0 +1,69 @@
+﻿@{
+    Page.Title = "Coursework information";
+    Layout = "~/_PlayerLayout.cshtml";
+   
+
+}
+<div>
+    <h1>Coursework information</h1>
+    <p>
+        To write this project I used <b>Visual Studio 2013</b> and <u>.Net Framework v4.5</u>. Codes and pages are mosly selected in <i>Razor v3</i>, a new feature of
+        Visual Studio 2013 and .Net framework v4.5. <br />
+        This project is written in C# and I used HTML5, some Java Script and also Ajax. It is fully <i>Object Oriented</i> and works with methods. The project has an Admin
+        with full access to delete or edit other users. this is required information to login as admin:
+        <ul>
+            <li>Username: <b>administrator</b></li>
+            <li>Password: <b>Adminpass</b></li>
+        </ul> 
+
+        <b>Security</b><br/>
+        In this project I have fully checked user input by: first, using <i>Regular Expression</i> or <i>Regex</i> in form element. Second, I used binding data by parameter
+        to SQL statement to prevent first order SQL injection. third, I used <pre>AntiForgery.GetHtml()</pre> command in each form to stop attack from outside of the form.
+        This command add a hidden input to form with a long hashed token and stop any attack form outside of the form. Further more, I hashed user's passwords with 
+        <i>Crypto</i> library. Another checking is URL checking from changin and trying to attack or do something from URL.<br />
+        
+        In this Project with Razor v3 and writing code and classes in different layers and like : repository and Handler, I used someting like MVC programming. URL in this 
+        project is fully friendly and always work with methods.<br/>
+            
+    </p>
+    <p>
+        This project has got these part:
+        <ul>
+            <li>Database in App_Data with a table</li>
+            <li>The table has got a primary key and auto increament field named ID</li>
+            <li>Login with username and password</li>
+            <li>Register with username, password, email, Date of birth</li>
+            <li>Users are not allowed to put a date bigger than today for birthday</li>
+            <li>Dafault page - if is the user birthday, the program shows birthday message automatically and full statistics of other users</li>
+            <li>Edit profile to change D.O.B. and chnage email or password- Users in this project are not allowed to delete the profile</li>
+            <li>For safety and as usual programming, users are not allowed to change thier username and the statistics</li>
+            <li>Admin can delete or edit other users without their permission</li>
+            <li>Readme page (this file), explain about the project</li>
+            <li>information page which is mosltly abut the game and how to play</li>
+            <li>Logout page</li>
+        </ul>
+        In this project I used the default template in visual studio with some modification and also I used some regex to check if it is the user's birthday or not. Mostly
+        all pages are in cshtml format and they follow the <i>page layout</i> in order to have same design. I used <i>Session</i> in this project to login and keep the state
+        until user logout or close the browser.
+    </p>
+    <p>
+        <b>Technical View:</b>
+        To implement this game, I used a simple 2D array which has got the result:
+        <pre>
+                    {
+                        {0,-1,1,1,-1},
+                        {1,0,-1,-1,1},
+                        {-1,1,0,1,-1},
+                        {-1,1,-1,0,1},
+                        {1,-1,1,-1,0}
+                    }
+                 </pre>
+    </p>
+
+
+    <p>
+        <b>Mohamad Khaleqi</b><br /> Student number: <b>808956</b><br/>
+        November 2014.
+
+    </p>
+</div>

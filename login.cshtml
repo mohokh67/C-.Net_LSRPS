@@ -1,0 +1,48 @@
+﻿@{
+    Page.Title = "Login";
+    Layout = "~/_PlayerLayout.cshtml";
+
+    var message = string.Empty;
+
+    //if it is post request
+    if (IsPost)
+    {
+        var username = Request.Form["username"];
+        var password = Request.Form["password"];
+
+
+        if (WebPlayer.AuthenticateAndLogin(username, password))
+        {
+            Response.Redirect("~/game.aspx");
+        }
+
+        message = "Username and/or password is incorrect ";
+    }
+
+}
+
+
+<div>
+    <section id="loginForm">
+        <div><p class="message-error">@message</p></div>
+        <form method="post" id="loginForm">
+            <fieldset>
+                <legend>Log in to Your Account</legend>
+                <ol>
+                    <li class="email">
+
+                        <label for="username">Username: </label>
+                        <input id="username" name="username" type="text" placeholder="Your username" required />
+                    </li>
+                    <li class="password">
+                        <label for="password">Password: </label>
+                        <input id="password" name="password" type="password" placeholder="Your password" required />
+                    </li>
+                    <li>
+                        <input name="login" value="Login" type="submit" class="" />
+                    </li>
+                </ol>
+            </fieldset>
+        </form>
+    </section>
+</div>

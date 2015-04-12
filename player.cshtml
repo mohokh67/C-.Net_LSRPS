@@ -1,0 +1,155 @@
+﻿@{
+    Page.Title = "Players";
+    Layout = "~/_PlayerLayout.cshtml";
+    var today = DateTime.Now.ToString("yyyy-MM-dd");
+
+    string submitButtonText = "Register";
+    var mode = Player.Mode;
+    //var username = Player.Username;
+    if (mode == "edit" || mode == "delete")
+    {
+
+        submitButtonText = "Save";
+        if (!WebPlayer.IsAuthenticated)
+        {
+            Response.Redirect("~/login/");
+        }
+    }
+    
+}
+
+
+@if (!mode.IsEmpty())
+{
+    var player = Player.Current;
+
+    <div id="body">
+       
+        <form action="~/player.ashx" method="post" id="playerForm">
+
+
+            @AntiForgery.GetHtml()
+            <input type="hidden" name="mode" value="@mode" />
+            <input type="hidden" name="playerId" value="@player.Id" />
+
+            <fieldset>
+                <legend>Registration Form</legend>
+                <ol>
+                    @if (mode == "edit")
+                    {
+                        <li>
+                            <p class="message-info">You are not allowed to change the username once you register.</p>
+                            <label for="username">Username: </label>
+                            <input id="username" name="username" value="@player.Username" readonly />
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <label for="username">Username: </label>
+                            <input id="username" name="username" maxlength="50" pattern="[A-Za-z0-9]{6,}" title="Minimum is 6 characters contain Alphabet and numbers"
+                                   placeholder="Your username" required value="@player.Username" />
+                        </li>
+                    }
+
+                    @if (mode == "edit")
+                    {
+                        <p class="message-info">Please leave the password blank if you do not want to change the password.</p>
+                    }
+
+                    @if (mode == "new")
+                    {
+                        <li>
+                            <label for="password">password: </label>
+                            <input id="password" name="password" pattern=".{8,50}" title="Minimum length is 8 characters" type="password" placeholder="Your password" value="" required />
+                        </li>
+                        <li>
+                            <label for="password2">confirm your password: </label>
+                            <input id="password2" name="password2" pattern=".{8,50}" title="Minimum length is 8 characters" type="password" placeholder="Confirm your password agian" value="" required oninput="check(this)" />
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <label for="password">password: </label>
+                            <input id="password" name="password" pattern=".{8,50}" title="Minimum length is 8 characters" type="password" placeholder="Your password" value="" />
+                        </li>
+                        <li>
+                            <label for="password2">confirm your password: </label>
+                            <input id="password2" name="password2" pattern=".{8,50}" title="Minimum length is 8 characters" type="password" placeholder="Confirm your password agian" value="" oninput="check(this)" />
+                        </li>
+                    }
+                    <li class="email">
+                        <label for="email">Email: </label>
+                        <input id="email" name="email" type="email" pattern=".{8,50}" title="Minimum length is 8 characters" placeholder="Your email" required value="@player.Email" />
+                    </li>
+                    <li>
+                        <label for="birthday">Date of birth: </label>
+                        <input type="date" min="1900-12-31" max="@today" id="birthday" name="birthday" required value="@player.Birthday">
+                    </li>
+                    <li>
+                        <input name="register" value="@submitButtonText" type="submit" />
+                    </li>
+                </ol>
+            </fieldset>
+        </form>
+    </div>
+
+}
+else
+{
+    @AntiForgery.GetHtml()
+    var where = string.Empty;
+    var grid = new WebGrid(source: PlayerRepository.GetAll(where, orderBy: "[username]"), rowsPerPage: 13);
+
+
+    if (WebPlayer.isAdmin)
+    {
+        @grid.GetHtml(
+
+        columns: grid.Columns(
+        grid.Column(format: @<a href="~/player/edit/@item.username">Edit user</a>),
+        grid.Column(format: @<a data-mode="delete" data-action="/player.ashx" data-item="@item.username" href="~/player/delete/@item.username">Delete user</a>),
+           grid.Column("username", header: "User name"),
+           grid.Column("email", header: "Email Address"),
+           grid.Column("birthday", header: "Birthday"),
+           grid.Column("win", header: "Win"),
+           grid.Column("lost", header: "Lost"),
+           grid.Column("draw", header: "Draw"),
+           grid.Column("total", header: "Total")
+
+
+           )
+       );
+    }
+    else
+    {
+
+        @grid.GetHtml(
+
+        columns: grid.Columns(
+        grid.Column("username", header: "User name"),
+        grid.Column("email", header: "Email Address"),
+        grid.Column("birthday", header: "Birthday"),
+        grid.Column("win", header: "Win"),
+        grid.Column("lost", header: "Lost"),
+        grid.Column("draw", header: "Draw"),
+        grid.Column("total", header: "Total")
+
+
+        )
+    );
+    }
+}
+<script language='javascript' type='text/javascript'>
+    function check(input) {
+        if (input.value != document.getElementById('password').value) {
+            input.setCustomValidity('Passwords are not match.');
+        } else {
+            input.setCustomValidity('');
+        }
+    }
+</script>
+
+
+
